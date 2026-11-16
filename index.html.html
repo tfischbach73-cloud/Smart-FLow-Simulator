@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart-Flow Energy – Händewasch-Simulator</title>
+<style>
+  :root {
+    --brand-dark: #0a4674;
+    --brand-blue: #147ab5;
+    --brand-green: #76b82a;
+    --brand-red: #c61a27;
+    --pale: #f2f7fa;
+    --line: #d4e2ec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 28px 16px;
+    background: #f4f7f9;
+    color: var(--brand-dark);
+    font: 16px/1.5 Arial, sans-serif;
+  }
+  .sf-wrap {
+    max-width: 850px;
+    margin: auto;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: clamp(20px, 4vw, 34px);
+    box-shadow: 0 8px 28px rgba(10, 70, 116, 0.08);
+  }
+  .sf-kicker { color: var(--brand-green); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
+  h1 { font-size: clamp(24px, 4vw, 32px); line-height: 1.2; margin: 6px 0 12px; color: var(--brand-dark); }
+  .sf-intro { margin: 0 0 16px; color: #3d5a70; font-size: 15px; }
+
+  .sf-guide {
+    background: #f4faec;
+    border: 1px solid #d4ecc0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    font-size: 14px;
+    color: var(--brand-dark);
+  }
+  .sf-guide strong { display: block; margin-bottom: 6px; color: var(--brand-dark); }
+  .sf-guide ul { margin: 0; padding-left: 18px; }
+  .sf-guide li { margin-bottom: 4px; }
+  .sf-guide li:last-child { margin-bottom: 0; }
+
+  .sf-modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: var(--pale);
+    padding: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    margin-bottom: 20px;
+  }
+  .sf-mode-btn {
+    border: 0;
+    padding: 12px;
+    border-radius: 9px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    background: transparent;
+    color: #496274;
+    transition: all 0.2s;
+  }
+  .sf-mode-btn.active-without {
+    background: #fff;
+    color: var(--brand-red);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .sf-mode-btn.active-with {
+    background: var(--brand-green);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(118, 184, 42, 0.35);
+  }
+
+  .sf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 660px) {
+    .sf-grid, .sf-modes { grid-template-columns: 1fr; }
+  }
+
+  .sf-card {
+    background: var(--pale);
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+  }
+  .sf-card h3 { margin: 0 0 12px; font-size: 17px; color: var(--brand-dark); }
+  .sf-group { margin-bottom: 14px; }
+  .sf-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .sf-row span { color: var(--brand-blue); }
+  input[type="range"] { width: 100%; accent-color: var(--brand-blue); cursor: pointer; }
+
+  .sf-sensor-box {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .sf-sensor-label {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+    color: var(--brand-dark);
+  }
+  .sf-sensor-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .sf-sbtn {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: #496274;
+    padding: 8px 6px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .sf-sbtn.active-cold {
+    background: var(--brand-blue);
+    color: #fff;
+    border-color: var(--brand-blue);
+  }
+  .sf-sbtn.active-warm {
+    background: var(--brand-red);
+    color: #fff;
+    border-color: var(--brand-red);
+  }
+
+  .sf-mischer {
+    text-align: center;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .sf-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 14px;
+    border-radius: 10px;
+    background: linear-gradient(to right, var(--brand-red), #e5e7eb 50%, var(--brand-blue));
+    margin: 12px 0;
+  }
+  .sf-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--brand-dark);
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .sf-mlabels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
+
+  .sf-btn {
+    background: var(--brand-dark);
+    color: #fff;
+    border: 0;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+  }
+  .sf-btn:hover { background: var(--brand-blue); }
+  .sf-btn.running { background: var(--brand-red); }
+  .sf-btn.running:hover { background: #a5141f; }
+
+  .sf-monitor {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .sf-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    background: var(--pale);
+    color: #496274;
+  }
+  .sf-badge.blocked { background: #eef7e3; color: #3c6911; border: 1px solid #cce6b0; }
+  .sf-badge.open { background: #fdf0f1; color: var(--brand-red); border: 1px solid #f5c2c7; }
+
+  .sf-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 10px;
+  }
+  .sf-metric {
+    background: var(--pale);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+  .sf-metric small { display: block; font-size: 12px; color: #496274; }
+  .sf-metric strong { display: block; font-size: 21px; margin-top: 3px; color: var(--brand-dark); }
+  .sf-metric.waste strong { color: var(--brand-red); }
+  .sf-metric.saved strong { color: var(--brand-green); }
+
+  .sf-pipe {
+    height: 26px;
+    background: #e2edf2;
+    border-radius: 8px;
+    margin-top: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .sf-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #f59e0b, var(--brand-red));
+  }
+  .sf-plabel {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brand-dark);
+  }
+
+  .sf-summary {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: none;
+  }
+  .sf-summary.waste-box {
+    background: #fdf0f1;
+    border: 1px solid #f5c2c7;
+    color: #7c1018;
+  }
+  .sf-summary.saved-box {
+    background: #eef7e3;
+    border: 1px solid #cce6b0;
+    color: #32590d;
+  }
+  .sf-summary.neutral-box {
+    background: var(--pale);
+    border: 1px solid var(--line);
+    color: var(--brand-dark);
+  }
+  .sf-note {
+    font-size: 12px;
+    color: #5b7588;
+    margin: 16px 0 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="sf-wrap">
+  <div class="sf-kicker">Interaktiver 10-Sekunden-Test</div>
+  <h1>Warum beim Händewaschen Energie verpufft</h1>
+  <p class="sf-intro">Simulieren Sie einen typischen Handwaschvorgang (10 Sekunden) und vergleichen Sie live den Wasser- und Energieverbrauch mit und ohne Smart-Flow.</p>
+
+  <div class="sf-guide">
+    <strong>So stellen Sie Ihre Wohnsituation ein:</strong>
+    <ul>
+      <li><strong>Betriebsmodus wählen:</strong> Vergleichen Sie das Verhalten <em>Ohne Smart-Flow</em> mit dem intelligenten Ventil <em>Mit Smart-Flow</em>.</li>
+      <li><strong>Leitung &amp; Temperatur:</strong> Stellen Sie die Rohrlänge von Ihrer Heizung/Therme bis zum Waschbecken sowie die Wassertemperaturen ein (Basis: 13 l/min Durchfluss).</li>
+      <li><strong>Temperatur vor dem Warmwasseranschluss:</strong> Wählen Sie, ob das Wasser am Sensor noch kalt ist (<em>unter 30 °C</em> – Ventil sperrt 10 Sek.) oder ob die Leitung bereits warm ist (<em>über 30 °C</em> – Ventil bleibt sofort offen).</li>
+      <li><strong>Hebelstellung am Hahn:</strong> Schieben Sie den Hebel nach rechts (Kalt), in die Mitte (50/50) oder ganz nach links (100 % Warm – kein Kaltwasser läuft mit, daher volle Freigabe ohne ungewollte Verschwendung).</li>
+    </ul>
+  </div>
+
+  <div class="sf-modes">
+    <button type="button" id="sf-btn-without" class="sf-mode-btn active-without">Ohne Smart-Flow (Standard)</button>
+    <button type="button" id="sf-btn-with" class="sf-mode-btn">Mit Smart-Flow (10 Sek. Sperre)</button>
+  </div>
+
+  <div class="sf-grid">
+    <div class="sf-card">
+      <h3>1. Leitung &amp; Sensor</h3>
+      <div class="sf-group">
+        <div class="sf-row"><label for="sf-len">Rohrlänge bis zum Hahn</label><span id="sf-val-len">5,0 m</span></div>
+        <input type="range" id="sf-len" min="3" max="10" step="0.5" value="5">
+      </div>
+      <div class="sf-group">
+        <div class="sf-row"><label for="sf-tcold">Kalt- / Standwasser</label><span id="sf-val-tcold">12 °C</span></div>
+        <input type="range" id="sf-tcold" min="8" max="15" step="1" value="12">
+      </div>
+      <div class="sf-group">
+        <div class="sf-row"><label for="sf-thot">Warmwasserquelle</label><span id="sf-val-thot">55 °C</span></div>
+        <input type="range" id="sf-thot" min="45" max="60" step="1" value="55">
+      </div>
+
+      <div class="sf-sensor-box">
+        <span class="sf-sensor-label">Temp. vor dem Warmwasseranschluss:</span>
+        <div class="sf-sensor-toggle">
+          <button type="button" id="sf-sens-cold" class="sf-sbtn active-cold">Unter 30 °C (Leitung kalt)</button>
+          <button type="button" id="sf-sens-warm" class="sf-sbtn">Über 30 °C (Leitung warm)</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sf-card" style="display:flex;flex-direction:column;justify-content:space-between;">
+      <div>
+        <h3>2. Hebelstellung am Hahn</h3>
+        <div class="sf-mischer">
+          <div style="font-weight:700;font-size:14px;" id="sf-val-mix">Mitte (50 % Warm / 50 % Kalt)</div>
+          <input type="range" id="sf-mix" class="sf-slider" min="0" max="100" step="5" value="50">
+          <div class="sf-mlabels">
+            <span style="color:var(--brand-red);">Warm (Links)</span>
+            <span>Mitte</span>
+            <span style="color:var(--brand-blue);">Kalt (Rechts)</span>
+          </div>
+        </div>
+      </div>
+      <button type="button" id="sf-start" class="sf-btn">Jetzt Hände waschen (10 Sek.)</button>
+    </div>
+  </div>
+
+  <div class="sf-monitor">
+    <div id="sf-badge" class="sf-badge">Bereit – klicken Sie auf „Jetzt Hände waschen (10 Sek.)“.</div>
+    <div class="sf-metrics">
+      <div class="sf-metric"><small>Waschzeit (max. 10 s)</small><strong id="sf-time">0,0 s</strong></div>
+      <div class="sf-metric"><small>Temperatur am Hahn</small><strong id="sf-temp">12,0 °C</strong></div>
+      <div class="sf-metric"><small>Gesamtwasserverbrauch</small><strong id="sf-total">0,00 l</strong></div>
+      <div class="sf-metric waste" id="sf-wcard"><small id="sf-wlabel">Verschwendetes Warmwasser</small><strong id="sf-waste">0,00 l</strong></div>
+      <div class="sf-metric waste" id="sf-ecard"><small id="sf-elabel">Verschwendete Energie</small><strong id="sf-energy">0,0 Wh</strong></div>
+    </div>
+    <div class="sf-pipe">
+      <div id="sf-fill" class="sf-fill"></div>
+      <div id="sf-plabel" class="sf-plabel">Warmwasser-Fortschritt im Rohr (0 %)</div>
+    </div>
+    <div id="sf-summary" class="sf-summary"></div>
+  </div>
+
+  <p class="sf-note">
+    Berechnungsgrundlage: 20er Rohr (18 mm Innendurchmesser, ca. 0,25 l/m), 13 l/min Gesamtdurchfluss bei voller Öffnung und 1,16 Wh Wärmeenergie pro Liter und °C Temperaturdifferenz.
+  </p>
+</div>
+
+<script>
+  var CROSS = Math.PI * Math.pow(0.009, 2);
+  var FLOW = 13;
+  var MAX_WASH_SEC = 10;
+
+  var pLen = document.getElementById('sf-len');
+  var pCold = document.getElementById('sf-tcold');
+  var pHot = document.getElementById('sf-thot');
+  var pMix = document.getElementById('sf-mix');
+  var btnStart = document.getElementById('sf-start');
+  var btnWithout = document.getElementById('sf-btn-without');
+  var btnWith = document.getElementById('sf-btn-with');
+  var btnSensCold = document.getElementById('sf-sens-cold');
+  var btnSensWarm = document.getElementById('sf-sens-warm');
+  var badge = document.getElementById('sf-badge');
+  var wCard = document.getElementById('sf-wcard');
+  var eCard = document.getElementById('sf-ecard');
+  var wLabel = document.getElementById('sf-wlabel');
+  var eLabel = document.getElementById('sf-elabel');
+  var summary = document.getElementById('sf-summary');
+
+  var smart = false;
+  var sensorAbove30 = false;
+  var running = false;
+  var timer = null;
+  var sec = 0;
+  var hotVol = 0;
+  var totalVol = 0;
+
+  function fmt(n, d) {
+    return n.toFixed(d).replace('.', ',');
+  }
+
+  function getWarmPct() {
+    return (100 - parseInt(pMix.value, 10)) / 100;
+  }
+
+  function refresh() {
+    document.getElementById('sf-val-len').textContent = fmt(parseFloat(pLen.value), 1) + ' m';
+    document.getElementById('sf-val-tcold').textContent = pCold.value + ' °C';
+    document.getElementById('sf-val-thot').textContent = pHot.value + ' °C';
+
+    var warmSlider = 100 - parseInt(pMix.value, 10);
+    var coldSlider = 100 - warmSlider;
+    var txt = warmSlider + ' % Warm / ' + coldSlider + ' % Kalt';
+    if (warmSlider === 50) { txt = 'Mitte (50 % Warm / 50 % Kalt)'; }
+    else if (warmSlider === 0) { txt = 'Ganz rechts (100 % Kalt)'; }
+    else if (warmSlider === 100) { txt = 'Ganz links (100 % Warm)'; }
+    document.getElementById('sf-val-mix').textContent = txt;
+
+    if (smart) {
+      wLabel.textContent = 'Eingespartes Warmwasser';
+      eLabel.textContent = 'Eingesparte Energie';
+      wCard.className = 'sf-metric saved';
+      eCard.className = 'sf-metric saved';
+    } else {
+      wLabel.textContent = 'Verschwendetes Warmwasser';
+      eLabel.textContent = 'Verschwendete Energie';
+      wCard.className = 'sf-metric waste';
+      eCard.className = 'sf-metric waste';
+    }
+
+    if (!running) {
+      document.getElementById('sf-time').textContent = '0,0 s';
+      var startTemp = sensorAbove30 && warmSlider === 100 ? parseFloat(pHot.value) : parseFloat(pCold.value);
+      document.getElementById('sf-temp').textContent = fmt(startTemp, 1) + ' °C';
+      document.getElementById('sf-total').textContent = '0,00 l';
+      document.getElementById('sf-waste').textContent = '0,00 l';
+      document.getElementById('sf-energy').textContent = '0,0 Wh';
+      document.getElementById('sf-fill').style.width = sensorAbove30 ? '100%' : '0%';
+      document.getElementById('sf-plabel').textContent = sensorAbove30
+        ? 'Warmwasserleitung bereits warm (über 30 °C)'
+        : 'Warmwasser-Fortschritt im Rohr (0 %)';
+      summary.style.display = 'none';
+      badge.className = 'sf-badge';
+
+      if (smart) {
+        if (sensorAbove30) {
+          badge.textContent = 'Smart-Flow aktiv: Leitung über 30 °C – Ventil bleibt sofort offen.';
+        } else if (warmSlider === 100) {
+          badge.textContent = 'Smart-Flow aktiv: Hebel ganz auf Warm – Ventil sofort offen.';
+        } else {
+          badge.textContent = 'Smart-Flow aktiv: Sperrt Warmwasser unter 30 °C für 10 Sek.';
+        }
+      } else {
+        badge.textContent = 'Ohne Smart-Flow: Warmwasser strömt beim Öffnen sofort nach.';
+      }
+    }
+  }
+
+  function stopAndReset() {
+    if (running) {
+      clearInterval(timer);
+      running = false;
+      btnStart.textContent = 'Jetzt Hände waschen (10 Sek.)';
+      btnStart.classList.remove('running');
+    }
+    sec = 0;
+    hotVol = 0;
+    totalVol = 0;
+    refresh();
+  }
+
+  btnWithout.addEventListener('click', function() {
+    smart = false;
+    btnWithout.className = 'sf-mode-btn active-without';
+    btnWith.className = 'sf-mode-btn';
+    stopAndReset();
+  });
+
+  btnWith.addEventListener('click', function() {
+    smart = true;
+    btnWith.className = 'sf-mode-btn active-with';
+    btnWithout.className = 'sf-mode-btn';
+    stopAndReset();
+  });
+
+  btnSensCold.addEventListener('click', function() {
+    sensorAbove30 = false;
+    btnSensCold.className = 'sf-sbtn active-cold';
+    btnSensWarm.className = 'sf-sbtn';
+    stopAndReset();
+  });
+
+  btnSensWarm.addEventListener('click', function() {
+    sensorAbove30 = true;
+    btnSensWarm.className = 'sf-sbtn active-warm';
+    btnSensCold.className = 'sf-sbtn';
+    stopAndReset();
+  });
+
+  pLen.addEventListener('input', stopAndReset);
+  pCold.addEventListener('input', stopAndReset);
+  pHot.addEventListener('input', stopAndReset);
+  pMix.addEventListener('input', stopAndReset);
+
+  function finishWash(aborted) {
+    clearInterval(timer);
+    running = false;
+    btnStart.textContent = 'Erneut Hände waschen (10 Sek.)';
+    btnStart.classList.remove('running');
+
+    var tC = parseFloat(pCold.value);
+    var tH = parseFloat(pHot.value);
+    var warmPct = getWarmPct();
+    var isFullWarm = (warmPct === 1);
+    var pipeVol = CROSS * parseFloat(pLen.value) * 1000;
+    var durText = fmt(sec, 1);
+    var prefix = aborted ? 'Nach ' + durText + ' Sekunden gestoppt: ' : 'Nach 10,0 Sekunden Händewaschen: ';
+
+    summary.style.display = 'block';
+
+    if (warmPct === 0) {
+      summary.className = 'sf-summary neutral-box';
+      summary.innerHTML = '<strong>' + prefix + '</strong>Der Hebel stand ganz rechts auf Kalt. Es wurde kein Warmwasser angefordert.';
+    } else if (isFullWarm) {
+      summary.className = 'sf-summary neutral-box';
+      summary.innerHTML = '<strong>' + prefix + 'Hebel ganz auf Warm (kein Kaltwasser mitgelaufen).</strong> Es wurde gezielt 100 % Warmwasser angefordert – daher entstehen <strong>0,00 l</strong> und <strong>0,0 Wh</strong> ungewollte Verschwendung.';
+    } else if (smart) {
+      if (sensorAbove30) {
+        summary.className = 'sf-summary neutral-box';
+        summary.innerHTML = '<strong>' + prefix + 'Warmwasserleitung war bereits über 30 °C.</strong> Smart-Flow hat das Ventil offen gelassen, sodass sofort warmes Wasser aus dem Hahn kam.';
+      } else {
+        var hypotheticHotVol = Math.min(pipeVol, (FLOW / 60) * warmPct * sec);
+        var savedWh = hypotheticHotVol * (tH - tC) * 1.16;
+        summary.className = 'sf-summary saved-box';
+        summary.innerHTML = '<strong>' + prefix + 'Smart-Flow hat das Warmwasserventil gesperrt!</strong> Sie haben nur <strong>' + fmt(totalVol, 2) + ' l</strong> Kaltwasser verbraucht und dabei <strong>' + fmt(hypotheticHotVol, 2) + ' l</strong> Warmwasser sowie <strong>' + fmt(savedWh, 1) + ' Wh</strong> Heizenergie eingespart.';
+      }
+    } else {
+      if (sensorAbove30) {
+        summary.className = 'sf-summary neutral-box';
+        summary.innerHTML = '<strong>' + prefix + 'Leitung war bereits warm (über 30 °C).</strong> Es kam direkt temperiertes Wasser am Hahn an.';
+      } else {
+        var wastedVol = Math.min(pipeVol, hotVol);
+        var wastedWh = wastedVol * (tH - tC) * 1.16;
+        var extraWater = (FLOW / 60) * warmPct * sec;
+        summary.className = 'sf-summary waste-box';
+        summary.innerHTML = '<strong>' + prefix + 'Ohne Smart-Flow!</strong> Obwohl nur kaltes Standwasser aus dem Hahn kam, wurden <strong>' + fmt(wastedVol, 2) + ' l</strong> Warmwasser umsonst aufgeheizt (<strong>' + fmt(wastedWh, 1) + ' Wh</strong> Energieverschwendung) und <strong>' + fmt(extraWater, 2) + ' l</strong> mehr Wasser verbraucht.';
+      }
+    }
+  }
+
+  function tick() {
+    sec += 0.05;
+    if (sec >= MAX_WASH_SEC) {
+      sec = MAX_WASH_SEC;
+    }
+
+    var tC = parseFloat(pCold.value);
+    var tH = parseFloat(pHot.value);
+    var warmPct = getWarmPct();
+    var coldPct = 1 - warmPct;
+    var isFullWarm = (warmPct === 1);
+    var pipeVol = CROSS * parseFloat(pLen.value) * 1000;
+
+    var blocked = smart && !sensorAbove30 && warmPct > 0 && !isFullWarm;
+    var effWarmPct = blocked ? 0 : warmPct;
+    var activeFlowRatio = coldPct + effWarmPct;
+
+    totalVol += (FLOW / 60) * activeFlowRatio * 0.05;
+
+    if (warmPct === 0) {
+      badge.className = 'sf-badge';
+      badge.textContent = 'Hebel ganz rechts auf Kalt – kein Warmwasser angefordert.';
+    } else if (isFullWarm) {
+      badge.className = 'sf-badge open';
+      badge.textContent = 'Hebel ganz links auf Warm (100 %) – volle Warmwasserleitung offen.';
+    } else if (smart && sensorAbove30) {
+      badge.className = 'sf-badge open';
+      badge.textContent = 'Smart-Flow aktiv: Leitung über 30 °C – Ventil bleibt offen.';
+    } else if (blocked) {
+      badge.className = 'sf-badge blocked';
+      badge.textContent = 'Smart-Flow sperrt Warmwasser – Sie sparen live Wasser & Energie!';
+    } else {
+      badge.className = 'sf-badge open';
+      badge.textContent = 'Ohne Smart-Flow: Heizung springt an – Warmwasser läuft ungenutzt ins Rohr!';
+    }
+
+    var hFlow = (FLOW / 60) * effWarmPct;
+    hotVol += hFlow * 0.05;
+
+    var pct = sensorAbove30 ? 100 : Math.min(100, (hotVol / pipeVol) * 100);
+    document.getElementById('sf-fill').style.width = pct + '%';
+    document.getElementById('sf-plabel').textContent = sensorAbove30
+      ? 'Warmwasserleitung bereits warm (100 %)'
+      : 'Warmwasser-Fortschritt im Rohr (' + Math.round(pct) + ' %)';
+    document.getElementById('sf-time').textContent = fmt(sec, 1) + ' s';
+    document.getElementById('sf-total').textContent = fmt(totalVol, 2) + ' l';
+
+    var currentTemp = tC;
+    if (effWarmPct > 0 && (sensorAbove30 || pct >= 100)) {
+      currentTemp = tC + (tH - tC) * effWarmPct;
+    }
+    document.getElementById('sf-temp').textContent = fmt(currentTemp, 1) + ' °C';
+
+    if (isFullWarm || warmPct === 0 || sensorAbove30) {
+      document.getElementById('sf-waste').textContent = '0,00 l';
+      document.getElementById('sf-energy').textContent = '0,0 Wh';
+    } else if (smart) {
+      var hypotheticVol = Math.min(pipeVol, (FLOW / 60) * warmPct * sec);
+      var savedWh = hypotheticVol * (tH - tC) * 1.16;
+      document.getElementById('sf-waste').textContent = fmt(hypotheticVol, 2) + ' l';
+      document.getElementById('sf-energy').textContent = fmt(savedWh, 1) + ' Wh';
+    } else {
+      var wastedVol = Math.min(pipeVol, hotVol);
+      var wastedWh = wastedVol * (tH - tC) * 1.16;
+      document.getElementById('sf-waste').textContent = fmt(wastedVol, 2) + ' l';
+      document.getElementById('sf-energy').textContent = fmt(wastedWh, 1) + ' Wh';
+    }
+
+    if (sec >= MAX_WASH_SEC) {
+      finishWash(false);
+    }
+  }
+
+  btnStart.addEventListener('click', function() {
+    if (!running) {
+      sec = 0;
+      hotVol = 0;
+      totalVol = 0;
+      summary.style.display = 'none';
+      running = true;
+      btnStart.textContent = 'Hahn schließen (Simulation stoppen)';
+      btnStart.classList.add('running');
+      timer = setInterval(tick, 50);
+    } else {
+      finishWash(true);
+    }
+  });
+
+  refresh();
+</script>
+
+</body>
+</html>
