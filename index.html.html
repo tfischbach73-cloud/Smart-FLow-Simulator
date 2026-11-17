@@ -16,58 +16,103 @@
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    padding: 28px 16px;
+    padding: 16px 12px;
     background: #f4f7f9;
     color: var(--brand-dark);
-    font: 16px/1.5 Arial, sans-serif;
+    font: 15px/1.45 Arial, sans-serif;
   }
   .sf-wrap {
-    max-width: 850px;
+    max-width: 860px;
     margin: auto;
     background: #fff;
     border: 1px solid var(--line);
     border-radius: 18px;
-    padding: clamp(20px, 4vw, 34px);
+    padding: clamp(16px, 3.5vw, 32px);
     box-shadow: 0 8px 28px rgba(10, 70, 116, 0.08);
   }
-  .sf-kicker { color: var(--brand-green); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
-  h1 { font-size: clamp(24px, 4vw, 32px); line-height: 1.2; margin: 6px 0 12px; color: var(--brand-dark); }
-  .sf-intro { margin: 0 0 16px; color: #3d5a70; font-size: 15px; }
-
-  .sf-guide {
-    background: #f4faec;
-    border: 1px solid #d4ecc0;
-    border-radius: 12px;
-    padding: 14px 18px;
-    margin-bottom: 22px;
-    font-size: 14px;
+  .sf-kicker {
+    color: var(--brand-green);
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+  h1 {
+    font-size: clamp(21px, 4vw, 30px);
+    line-height: 1.2;
+    margin: 4px 0 8px;
     color: var(--brand-dark);
   }
-  .sf-guide strong { display: block; margin-bottom: 6px; color: var(--brand-dark); }
-  .sf-guide ul { margin: 0; padding-left: 18px; }
-  .sf-guide li { margin-bottom: 4px; }
-  .sf-guide li:last-child { margin-bottom: 0; }
+  .sf-intro {
+    margin: 0 0 14px;
+    color: #3d5a70;
+    font-size: 14px;
+  }
+
+  details.sf-accordion {
+    background: var(--pale);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  details.sf-accordion.guide-acc {
+    background: #f4faec;
+    border-color: #d4ecc0;
+  }
+  details.sf-accordion summary {
+    padding: 11px 14px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  details.sf-accordion summary::-webkit-details-marker { display: none; }
+  details.sf-accordion summary::after {
+    content: "▼";
+    font-size: 11px;
+    transition: transform 0.2s;
+    color: var(--brand-blue);
+  }
+  details.sf-accordion[open] summary::after {
+    transform: rotate(180deg);
+  }
+  .sf-acc-body {
+    padding: 0 14px 14px;
+    font-size: 13.5px;
+    color: var(--brand-dark);
+  }
+  .sf-acc-body ul {
+    margin: 4px 0 0;
+    padding-left: 18px;
+  }
+  .sf-acc-body li { margin-bottom: 4px; }
 
   .sf-modes {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
     background: var(--pale);
-    padding: 6px;
+    padding: 5px;
     border-radius: 12px;
     border: 1px solid var(--line);
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
   .sf-mode-btn {
     border: 0;
-    padding: 12px;
+    padding: 10px 8px;
     border-radius: 9px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     background: transparent;
     color: #496274;
     transition: all 0.2s;
+    line-height: 1.25;
   }
   .sf-mode-btn.active-without {
     background: #fff;
@@ -80,36 +125,133 @@
     box-shadow: 0 2px 6px rgba(118, 184, 42, 0.35);
   }
 
+  .sf-hero-panel {
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .sf-btn {
+    background: var(--brand-dark);
+    color: #fff;
+    border: 0;
+    padding: 14px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s, transform 0.1s;
+    margin-bottom: 12px;
+  }
+  .sf-btn:hover { background: var(--brand-blue); }
+  .sf-btn:active { transform: scale(0.99); }
+  .sf-btn.running { background: var(--brand-red); }
+  .sf-btn.running:hover { background: #a5141f; }
+
+  .sf-badge {
+    display: block;
+    padding: 7px 12px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    background: var(--pale);
+    color: #496274;
+    text-align: center;
+  }
+  .sf-badge.blocked { background: #eef7e3; color: #3c6911; border: 1px solid #cce6b0; }
+  .sf-badge.open { background: #fdf0f1; color: var(--brand-red); border: 1px solid #f5c2c7; }
+
+  .sf-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .sf-metric {
+    background: var(--pale);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+  .sf-metric.wide { grid-column: span 2; }
+  .sf-metric small { display: block; font-size: 11px; color: #496274; line-height: 1.2; }
+  .sf-metric strong { display: block; font-size: 19px; margin-top: 3px; color: var(--brand-dark); }
+  .sf-metric.waste strong { color: var(--brand-red); }
+  .sf-metric.saved strong { color: var(--brand-green); }
+
+  @media (max-width: 660px) {
+    .sf-metrics { grid-template-columns: 1fr 1fr; }
+    .sf-metric.wide { grid-column: span 2; }
+    .sf-metric strong { font-size: 18px; }
+  }
+
+  .sf-pipe {
+    height: 24px;
+    background: #e2edf2;
+    border-radius: 8px;
+    margin-top: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .sf-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #f59e0b, var(--brand-red));
+    transition: width 0.05s linear;
+  }
+  .sf-plabel {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 3px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--brand-dark);
+  }
+
+  .sf-summary {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    display: none;
+  }
+  .sf-summary.waste-box { background: #fdf0f1; border: 1px solid #f5c2c7; color: #7c1018; }
+  .sf-summary.saved-box { background: #eef7e3; border: 1px solid #cce6b0; color: #32590d; }
+  .sf-summary.neutral-box { background: var(--pale); border: 1px solid var(--line); color: var(--brand-dark); }
+
   .sf-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 18px;
+    gap: 14px;
+    margin-top: 6px;
   }
   @media (max-width: 660px) {
-    .sf-grid, .sf-modes { grid-template-columns: 1fr; }
+    .sf-grid { grid-template-columns: 1fr; }
   }
 
   .sf-card {
-    background: var(--pale);
-    padding: 18px;
-    border-radius: 14px;
+    background: #fff;
+    padding: 14px;
+    border-radius: 12px;
     border: 1px solid var(--line);
   }
-  .sf-card h3 { margin: 0 0 12px; font-size: 17px; color: var(--brand-dark); }
-  .sf-group { margin-bottom: 14px; }
-  .sf-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .sf-card h3 { margin: 0 0 10px; font-size: 15px; color: var(--brand-dark); }
+  .sf-group { margin-bottom: 12px; }
+  .sf-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; margin-bottom: 4px; }
   .sf-row span { color: var(--brand-blue); }
-  input[type="range"] { width: 100%; accent-color: var(--brand-blue); cursor: pointer; }
+  input[type="range"] { width: 100%; height: 26px; accent-color: var(--brand-blue); cursor: pointer; }
 
   .sf-sensor-box {
-    margin-top: 14px;
-    padding-top: 12px;
+    margin-top: 10px;
+    padding-top: 10px;
     border-top: 1px solid var(--line);
   }
   .sf-sensor-label {
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12.5px;
     margin-bottom: 6px;
     display: block;
     color: var(--brand-dark);
@@ -123,30 +265,21 @@
     border: 1px solid var(--line);
     background: #fff;
     color: #496274;
-    padding: 8px 6px;
+    padding: 8px 4px;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     cursor: pointer;
   }
-  .sf-sbtn.active-cold {
-    background: var(--brand-blue);
-    color: #fff;
-    border-color: var(--brand-blue);
-  }
-  .sf-sbtn.active-warm {
-    background: var(--brand-red);
-    color: #fff;
-    border-color: var(--brand-red);
-  }
+  .sf-sbtn.active-cold { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
+  .sf-sbtn.active-warm { background: var(--brand-red); color: #fff; border-color: var(--brand-red); }
 
   .sf-mischer {
     text-align: center;
-    padding: 16px;
-    background: #fff;
+    padding: 12px;
+    background: var(--pale);
     border: 1px solid var(--line);
     border-radius: 10px;
-    margin-bottom: 14px;
   }
   .sf-slider {
     -webkit-appearance: none;
@@ -154,120 +287,24 @@
     height: 14px;
     border-radius: 10px;
     background: linear-gradient(to right, var(--brand-red), #e5e7eb 50%, var(--brand-blue));
-    margin: 12px 0;
+    margin: 10px 0;
   }
   .sf-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: var(--brand-dark);
     cursor: pointer;
     border: 2px solid #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
   }
-  .sf-mlabels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
+  .sf-mlabels { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; }
 
-  .sf-btn {
-    background: var(--brand-dark);
-    color: #fff;
-    border: 0;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: 700;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.2s;
-  }
-  .sf-btn:hover { background: var(--brand-blue); }
-  .sf-btn.running { background: var(--brand-red); }
-  .sf-btn.running:hover { background: #a5141f; }
-
-  .sf-monitor {
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 18px;
-  }
-  .sf-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 14px;
-    background: var(--pale);
-    color: #496274;
-  }
-  .sf-badge.blocked { background: #eef7e3; color: #3c6911; border: 1px solid #cce6b0; }
-  .sf-badge.open { background: #fdf0f1; color: var(--brand-red); border: 1px solid #f5c2c7; }
-
-  .sf-metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-    gap: 10px;
-  }
-  .sf-metric {
-    background: var(--pale);
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--line);
-  }
-  .sf-metric small { display: block; font-size: 12px; color: #496274; }
-  .sf-metric strong { display: block; font-size: 21px; margin-top: 3px; color: var(--brand-dark); }
-  .sf-metric.waste strong { color: var(--brand-red); }
-  .sf-metric.saved strong { color: var(--brand-green); }
-
-  .sf-pipe {
-    height: 26px;
-    background: #e2edf2;
-    border-radius: 8px;
-    margin-top: 14px;
-    position: relative;
-    overflow: hidden;
-  }
-  .sf-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(to right, #f59e0b, var(--brand-red));
-  }
-  .sf-plabel {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    top: 4px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--brand-dark);
-  }
-
-  .sf-summary {
-    margin-top: 14px;
-    padding: 14px 16px;
-    border-radius: 10px;
-    font-size: 14px;
-    display: none;
-  }
-  .sf-summary.waste-box {
-    background: #fdf0f1;
-    border: 1px solid #f5c2c7;
-    color: #7c1018;
-  }
-  .sf-summary.saved-box {
-    background: #eef7e3;
-    border: 1px solid #cce6b0;
-    color: #32590d;
-  }
-  .sf-summary.neutral-box {
-    background: var(--pale);
-    border: 1px solid var(--line);
-    color: var(--brand-dark);
-  }
   .sf-note {
-    font-size: 12px;
+    font-size: 11.5px;
     color: #5b7588;
-    margin: 16px 0 0;
+    margin: 12px 0 0;
   }
 </style>
 </head>
@@ -276,74 +313,25 @@
 <div class="sf-wrap">
   <div class="sf-kicker">Interaktiver 10-Sekunden-Test</div>
   <h1>Warum beim Händewaschen Energie verpufft</h1>
-  <p class="sf-intro">Simulieren Sie einen typischen Handwaschvorgang (10 Sekunden) und vergleichen Sie live den Wasser- und Energieverbrauch mit und ohne Smart-Flow.</p>
-
-  <div class="sf-guide">
-    <strong>So stellen Sie Ihre Wohnsituation ein:</strong>
-    <ul>
-      <li><strong>Betriebsmodus wählen:</strong> Vergleichen Sie das Verhalten <em>Ohne Smart-Flow</em> mit dem intelligenten Ventil <em>Mit Smart-Flow</em>.</li>
-      <li><strong>Leitung &amp; Temperatur:</strong> Stellen Sie die Rohrlänge von Ihrer Heizung/Therme bis zum Waschbecken sowie die Wassertemperaturen ein (Basis: 13 l/min Durchfluss).</li>
-      <li><strong>Temperatur vor dem Warmwasseranschluss:</strong> Wählen Sie, ob das Wasser am Sensor noch kalt ist (<em>unter 30 °C</em> – Ventil sperrt 10 Sek.) oder ob die Leitung bereits warm ist (<em>über 30 °C</em> – Ventil bleibt sofort offen).</li>
-      <li><strong>Hebelstellung am Hahn:</strong> Schieben Sie den Hebel nach rechts (Kalt), in die Mitte (50/50) oder ganz nach links (100 % Warm – kein Kaltwasser läuft mit, daher volle Freigabe ohne ungewollte Verschwendung).</li>
-    </ul>
-  </div>
+  <p class="sf-intro">Vergleichen Sie live den Wasser- und Energieverbrauch beim Händewaschen (10 Sek.) mit und ohne Smart-Flow.</p>
 
   <div class="sf-modes">
-    <button type="button" id="sf-btn-without" class="sf-mode-btn active-without">Ohne Smart-Flow (Standard)</button>
-    <button type="button" id="sf-btn-with" class="sf-mode-btn">Mit Smart-Flow (10 Sek. Sperre)</button>
+    <button type="button" id="sf-btn-without" class="sf-mode-btn active-without">Ohne Smart-Flow<br><small style="font-weight:400;">(Standard)</small></button>
+    <button type="button" id="sf-btn-with" class="sf-mode-btn">Mit Smart-Flow<br><small style="font-weight:400;">(10 Sek. Sperre)</small></button>
   </div>
 
-  <div class="sf-grid">
-    <div class="sf-card">
-      <h3>1. Leitung &amp; Sensor</h3>
-      <div class="sf-group">
-        <div class="sf-row"><label for="sf-len">Rohrlänge bis zum Hahn</label><span id="sf-val-len">5,0 m</span></div>
-        <input type="range" id="sf-len" min="3" max="10" step="0.5" value="5">
-      </div>
-      <div class="sf-group">
-        <div class="sf-row"><label for="sf-tcold">Kalt- / Standwasser</label><span id="sf-val-tcold">12 °C</span></div>
-        <input type="range" id="sf-tcold" min="8" max="15" step="1" value="12">
-      </div>
-      <div class="sf-group">
-        <div class="sf-row"><label for="sf-thot">Warmwasserquelle</label><span id="sf-val-thot">55 °C</span></div>
-        <input type="range" id="sf-thot" min="45" max="60" step="1" value="55">
-      </div>
+  <div class="sf-hero-panel">
+    <button type="button" id="sf-start" class="sf-btn">▶ Jetzt Hände waschen (10 Sek.)</button>
+    <div id="sf-badge" class="sf-badge">Bereit – starten Sie den 10-Sekunden-Test.</div>
 
-      <div class="sf-sensor-box">
-        <span class="sf-sensor-label">Temp. vor dem Warmwasseranschluss:</span>
-        <div class="sf-sensor-toggle">
-          <button type="button" id="sf-sens-cold" class="sf-sbtn active-cold">Unter 30 °C (Leitung kalt)</button>
-          <button type="button" id="sf-sens-warm" class="sf-sbtn">Über 30 °C (Leitung warm)</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="sf-card" style="display:flex;flex-direction:column;justify-content:space-between;">
-      <div>
-        <h3>2. Hebelstellung am Hahn</h3>
-        <div class="sf-mischer">
-          <div style="font-weight:700;font-size:14px;" id="sf-val-mix">Mitte (50 % Warm / 50 % Kalt)</div>
-          <input type="range" id="sf-mix" class="sf-slider" min="0" max="100" step="5" value="50">
-          <div class="sf-mlabels">
-            <span style="color:var(--brand-red);">Warm (Links)</span>
-            <span>Mitte</span>
-            <span style="color:var(--brand-blue);">Kalt (Rechts)</span>
-          </div>
-        </div>
-      </div>
-      <button type="button" id="sf-start" class="sf-btn">Jetzt Hände waschen (10 Sek.)</button>
-    </div>
-  </div>
-
-  <div class="sf-monitor">
-    <div id="sf-badge" class="sf-badge">Bereit – klicken Sie auf „Jetzt Hände waschen (10 Sek.)“.</div>
     <div class="sf-metrics">
-      <div class="sf-metric"><small>Waschzeit (max. 10 s)</small><strong id="sf-time">0,0 s</strong></div>
-      <div class="sf-metric"><small>Temperatur am Hahn</small><strong id="sf-temp">12,0 °C</strong></div>
-      <div class="sf-metric"><small>Gesamtwasserverbrauch</small><strong id="sf-total">0,00 l</strong></div>
+      <div class="sf-metric"><small>Waschzeit</small><strong id="sf-time">0,0 s</strong></div>
+      <div class="sf-metric"><small>Temp. am Hahn</small><strong id="sf-temp">12,0 °C</strong></div>
       <div class="sf-metric waste" id="sf-wcard"><small id="sf-wlabel">Verschwendetes Warmwasser</small><strong id="sf-waste">0,00 l</strong></div>
       <div class="sf-metric waste" id="sf-ecard"><small id="sf-elabel">Verschwendete Energie</small><strong id="sf-energy">0,0 Wh</strong></div>
+      <div class="sf-metric wide"><small>Gesamtwasserverbrauch am Hahn</small><strong id="sf-total">0,00 l</strong></div>
     </div>
+
     <div class="sf-pipe">
       <div id="sf-fill" class="sf-fill"></div>
       <div id="sf-plabel" class="sf-plabel">Warmwasser-Fortschritt im Rohr (0 %)</div>
@@ -351,8 +339,66 @@
     <div id="sf-summary" class="sf-summary"></div>
   </div>
 
+  <details class="sf-accordion" id="sf-settings-acc">
+    <summary>⚙️ Wohnsituation &amp; Hebelstellung anpassen (<span id="sf-summary-pill">5 m · Mitte 50/50</span>)</summary>
+    <div class="sf-acc-body">
+      <div class="sf-grid">
+        <div class="sf-card">
+          <h3>1. Leitung &amp; Sensor</h3>
+          <div class="sf-group">
+            <div class="sf-row"><label for="sf-len">Rohrlänge bis zum Hahn</label><span id="sf-val-len">5,0 m</span></div>
+            <input type="range" id="sf-len" min="3" max="10" step="0.5" value="5">
+          </div>
+          <div class="sf-group">
+            <div class="sf-row"><label for="sf-tcold">Kalt- / Standwasser</label><span id="sf-val-tcold">12 °C</span></div>
+            <input type="range" id="sf-tcold" min="8" max="15" step="1" value="12">
+          </div>
+          <div class="sf-group">
+            <div class="sf-row"><label for="sf-thot">Warmwasserquelle</label><span id="sf-val-thot">55 °C</span></div>
+            <input type="range" id="sf-thot" min="45" max="60" step="1" value="55">
+          </div>
+          <div class="sf-sensor-box">
+            <span class="sf-sensor-label">Temp. vor dem Warmwasseranschluss:</span>
+            <div class="sf-sensor-toggle">
+              <button type="button" id="sf-sens-cold" class="sf-sbtn active-cold">Unter 30 °C (kalt)</button>
+              <button type="button" id="sf-sens-warm" class="sf-sbtn">Über 30 °C (warm)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sf-card">
+          <h3>2. Hebelstellung am Hahn</h3>
+          <div class="sf-mischer">
+            <div style="font-weight:700;font-size:13.5px;" id="sf-val-mix">Mitte (50 % Warm / 50 % Kalt)</div>
+            <input type="range" id="sf-mix" class="sf-slider" min="0" max="100" step="5" value="50">
+            <div class="sf-mlabels">
+              <span style="color:var(--brand-red);">Warm (Links)</span>
+              <span>Mitte</span>
+              <span style="color:var(--brand-blue);">Kalt (Rechts)</span>
+            </div>
+          </div>
+          <p style="font-size:12.5px;color:#496274;margin:10px 0 0;">
+            <strong>Tipp:</strong> Bei 100 % Warm (ganz links) erkennt Smart-Flow den bewussten Warmwasserwunsch und gibt sofort frei.
+          </p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="sf-accordion guide-acc">
+    <summary>💡 So funktioniert der Simulator (Kurzanleitung)</summary>
+    <div class="sf-acc-body">
+      <ul>
+        <li><strong>Betriebsmodus wählen:</strong> Vergleichen Sie <em>Ohne Smart-Flow</em> mit dem intelligenten Ventil <em>Mit Smart-Flow</em>.</li>
+        <li><strong>Leitung &amp; Temperatur:</strong> Stellen Sie Rohrlänge bis zum Waschbecken und Wassertemperaturen ein (Basis: 13 l/min).</li>
+        <li><strong>Temperatur vor dem Anschluss:</strong> Wählen Sie, ob das Wasser am Sensor noch kalt ist (<em>unter 30 °C</em> – Ventil sperrt 10 Sek.) oder bereits warm (<em>über 30 °C</em> – bleibt offen).</li>
+        <li><strong>Hebelstellung am Hahn:</strong> Rechts (Kalt), Mitte (50/50) oder ganz links (100 % Warm – sofortige Freigabe).</li>
+      </ul>
+    </div>
+  </details>
+
   <p class="sf-note">
-    Berechnungsgrundlage: 20er Rohr (18 mm Innendurchmesser, ca. 0,25 l/m), 13 l/min Gesamtdurchfluss bei voller Öffnung und 1,16 Wh Wärmeenergie pro Liter und °C Temperaturdifferenz.
+    Basis: 20er Rohr (18 mm innen, ca. 0,25 l/m), 13 l/min Durchfluss und 1,16 Wh pro Liter und °C Temperaturdifferenz.
   </p>
 </div>
 
@@ -376,6 +422,11 @@
   var wLabel = document.getElementById('sf-wlabel');
   var eLabel = document.getElementById('sf-elabel');
   var summary = document.getElementById('sf-summary');
+  var settingsAcc = document.getElementById('sf-settings-acc');
+
+  if (window.innerWidth > 660) {
+    settingsAcc.setAttribute('open', '');
+  }
 
   var smart = false;
   var sensorAbove30 = false;
@@ -394,17 +445,20 @@
   }
 
   function refresh() {
-    document.getElementById('sf-val-len').textContent = fmt(parseFloat(pLen.value), 1) + ' m';
+    var lenStr = fmt(parseFloat(pLen.value), 1) + ' m';
+    document.getElementById('sf-val-len').textContent = lenStr;
     document.getElementById('sf-val-tcold').textContent = pCold.value + ' °C';
     document.getElementById('sf-val-thot').textContent = pHot.value + ' °C';
 
     var warmSlider = 100 - parseInt(pMix.value, 10);
     var coldSlider = 100 - warmSlider;
     var txt = warmSlider + ' % Warm / ' + coldSlider + ' % Kalt';
-    if (warmSlider === 50) { txt = 'Mitte (50 % Warm / 50 % Kalt)'; }
-    else if (warmSlider === 0) { txt = 'Ganz rechts (100 % Kalt)'; }
-    else if (warmSlider === 100) { txt = 'Ganz links (100 % Warm)'; }
+    var shortMix = warmSlider + '/' + coldSlider;
+    if (warmSlider === 50) { txt = 'Mitte (50 % Warm / 50 % Kalt)'; shortMix = 'Mitte 50/50'; }
+    else if (warmSlider === 0) { txt = 'Ganz rechts (100 % Kalt)'; shortMix = '100 % Kalt'; }
+    else if (warmSlider === 100) { txt = 'Ganz links (100 % Warm)'; shortMix = '100 % Warm'; }
     document.getElementById('sf-val-mix').textContent = txt;
+    document.getElementById('sf-summary-pill').textContent = lenStr + ' · ' + shortMix;
 
     if (smart) {
       wLabel.textContent = 'Eingespartes Warmwasser';
@@ -438,142 +492,77 @@
         } else if (warmSlider === 100) {
           badge.textContent = 'Smart-Flow aktiv: Hebel ganz auf Warm – Ventil sofort offen.';
         } else {
-          badge.textContent = 'Smart-Flow aktiv: Sperrt Warmwasser unter 30 °C für 10 Sek.';
+          badge.textContent = 'Smart-Flow aktiv: Sperrt Warmwasser bei Kurzbetrieb (10 Sek.).';
         }
       } else {
-        badge.textContent = 'Ohne Smart-Flow: Warmwasser strömt beim Öffnen sofort nach.';
+        badge.textContent = 'Standard-Armatur: Zieht sofort Warmwasser aus dem Speicher nach.';
       }
     }
   }
 
-  function stopAndReset() {
-    if (running) {
-      clearInterval(timer);
-      running = false;
-      btnStart.textContent = 'Jetzt Hände waschen (10 Sek.)';
-      btnStart.classList.remove('running');
-    }
-    sec = 0;
-    hotVol = 0;
-    totalVol = 0;
-    refresh();
-  }
-
-  btnWithout.addEventListener('click', function() {
-    smart = false;
-    btnWithout.className = 'sf-mode-btn active-without';
-    btnWith.className = 'sf-mode-btn';
-    stopAndReset();
-  });
-
-  btnWith.addEventListener('click', function() {
-    smart = true;
-    btnWith.className = 'sf-mode-btn active-with';
-    btnWithout.className = 'sf-mode-btn';
-    stopAndReset();
-  });
-
-  btnSensCold.addEventListener('click', function() {
-    sensorAbove30 = false;
-    btnSensCold.className = 'sf-sbtn active-cold';
-    btnSensWarm.className = 'sf-sbtn';
-    stopAndReset();
-  });
-
-  btnSensWarm.addEventListener('click', function() {
-    sensorAbove30 = true;
-    btnSensWarm.className = 'sf-sbtn active-warm';
-    btnSensCold.className = 'sf-sbtn';
-    stopAndReset();
-  });
-
-  pLen.addEventListener('input', stopAndReset);
-  pCold.addEventListener('input', stopAndReset);
-  pHot.addEventListener('input', stopAndReset);
-  pMix.addEventListener('input', stopAndReset);
-
-  function finishWash(aborted) {
+  function finishWash(stoppedEarly) {
     clearInterval(timer);
     running = false;
-    btnStart.textContent = 'Erneut Hände waschen (10 Sek.)';
+    btnStart.textContent = '▶ Jetzt Hände waschen (10 Sek.)';
     btnStart.classList.remove('running');
 
     var tC = parseFloat(pCold.value);
     var tH = parseFloat(pHot.value);
+    var pipeVol = parseFloat(pLen.value) * CROSS * 1000;
     var warmPct = getWarmPct();
     var isFullWarm = (warmPct === 1);
-    var pipeVol = CROSS * parseFloat(pLen.value) * 1000;
-    var durText = fmt(sec, 1);
-    var prefix = aborted ? 'Nach ' + durText + ' Sekunden gestoppt: ' : 'Nach 10,0 Sekunden Händewaschen: ';
 
     summary.style.display = 'block';
+    var prefix = stoppedEarly ? 'Nach ' + fmt(sec, 1) + ' Sek. gestoppt: ' : 'Nach 10 Sekunden Händewaschen: ';
 
     if (warmPct === 0) {
       summary.className = 'sf-summary neutral-box';
-      summary.innerHTML = '<strong>' + prefix + '</strong>Der Hebel stand ganz rechts auf Kalt. Es wurde kein Warmwasser angefordert.';
+      summary.innerHTML = '<strong>' + prefix + '</strong>Hebel stand komplett auf Kalt – es wurde kein Warmwasser angefordert.';
+    } else if (sensorAbove30) {
+      summary.className = 'sf-summary neutral-box';
+      summary.innerHTML = '<strong>' + prefix + '</strong>Die Leitung war bereits über 30 °C warm – das warme Wasser stand sofort bereit.';
     } else if (isFullWarm) {
       summary.className = 'sf-summary neutral-box';
-      summary.innerHTML = '<strong>' + prefix + 'Hebel ganz auf Warm (kein Kaltwasser mitgelaufen).</strong> Es wurde gezielt 100 % Warmwasser angefordert – daher entstehen <strong>0,00 l</strong> und <strong>0,0 Wh</strong> ungewollte Verschwendung.';
+      summary.innerHTML = '<strong>' + prefix + '</strong>Hebel stand ganz auf Warm (100 %) – bewusstes Zapfen ohne Sperre.';
     } else if (smart) {
-      if (sensorAbove30) {
-        summary.className = 'sf-summary neutral-box';
-        summary.innerHTML = '<strong>' + prefix + 'Warmwasserleitung war bereits über 30 °C.</strong> Smart-Flow hat das Ventil offen gelassen, sodass sofort warmes Wasser aus dem Hahn kam.';
-      } else {
-        var hypotheticHotVol = Math.min(pipeVol, (FLOW / 60) * warmPct * sec);
-        var savedWh = hypotheticHotVol * (tH - tC) * 1.16;
-        summary.className = 'sf-summary saved-box';
-        summary.innerHTML = '<strong>' + prefix + 'Smart-Flow hat das Warmwasserventil gesperrt!</strong> Sie haben nur <strong>' + fmt(totalVol, 2) + ' l</strong> Kaltwasser verbraucht und dabei <strong>' + fmt(hypotheticHotVol, 2) + ' l</strong> Warmwasser sowie <strong>' + fmt(savedWh, 1) + ' Wh</strong> Heizenergie eingespart.';
-      }
+      var hypotheticVol = Math.min(pipeVol, (FLOW / 60) * warmPct * sec);
+      var savedWh = hypotheticVol * (tH - tC) * 1.16;
+      summary.className = 'sf-summary saved-box';
+      summary.innerHTML = '<strong>' + prefix + '</strong>Smart-Flow hat <strong>' + fmt(hypotheticVol, 2) + ' l Warmwasser</strong> und <strong>' + fmt(savedWh, 1) + ' Wh Energie</strong> eingespart!';
     } else {
-      if (sensorAbove30) {
-        summary.className = 'sf-summary neutral-box';
-        summary.innerHTML = '<strong>' + prefix + 'Leitung war bereits warm (über 30 °C).</strong> Es kam direkt temperiertes Wasser am Hahn an.';
-      } else {
-        var wastedVol = Math.min(pipeVol, hotVol);
-        var wastedWh = wastedVol * (tH - tC) * 1.16;
-        var extraWater = (FLOW / 60) * warmPct * sec;
-        summary.className = 'sf-summary waste-box';
-        summary.innerHTML = '<strong>' + prefix + 'Ohne Smart-Flow!</strong> Obwohl nur kaltes Standwasser aus dem Hahn kam, wurden <strong>' + fmt(wastedVol, 2) + ' l</strong> Warmwasser umsonst aufgeheizt (<strong>' + fmt(wastedWh, 1) + ' Wh</strong> Energieverschwendung) und <strong>' + fmt(extraWater, 2) + ' l</strong> mehr Wasser verbraucht.';
-      }
+      var wastedVol = Math.min(pipeVol, hotVol);
+      var wastedWh = wastedVol * (tH - tC) * 1.16;
+      summary.className = 'sf-summary waste-box';
+      summary.innerHTML = '<strong>' + prefix + '</strong>Ohne Smart-Flow: Heizung springt an – <strong>' + fmt(wastedVol, 2) + ' l Warmwasser (' + fmt(wastedWh, 1) + ' Wh)</strong> laufen ungenutzt ins Rohr!';
     }
   }
 
   function tick() {
     sec += 0.05;
-    if (sec >= MAX_WASH_SEC) {
-      sec = MAX_WASH_SEC;
-    }
+    if (sec > MAX_WASH_SEC) sec = MAX_WASH_SEC;
 
     var tC = parseFloat(pCold.value);
     var tH = parseFloat(pHot.value);
+    var pipeVol = parseFloat(pLen.value) * CROSS * 1000;
     var warmPct = getWarmPct();
-    var coldPct = 1 - warmPct;
     var isFullWarm = (warmPct === 1);
-    var pipeVol = CROSS * parseFloat(pLen.value) * 1000;
 
-    var blocked = smart && !sensorAbove30 && warmPct > 0 && !isFullWarm;
+    var blocked = smart && !sensorAbove30 && !isFullWarm && warmPct > 0;
     var effWarmPct = blocked ? 0 : warmPct;
-    var activeFlowRatio = coldPct + effWarmPct;
+    var effFlow = blocked ? FLOW * (1 - warmPct) : FLOW;
 
-    totalVol += (FLOW / 60) * activeFlowRatio * 0.05;
-
-    if (warmPct === 0) {
-      badge.className = 'sf-badge';
-      badge.textContent = 'Hebel ganz rechts auf Kalt – kein Warmwasser angefordert.';
-    } else if (isFullWarm) {
-      badge.className = 'sf-badge open';
-      badge.textContent = 'Hebel ganz links auf Warm (100 %) – volle Warmwasserleitung offen.';
-    } else if (smart && sensorAbove30) {
-      badge.className = 'sf-badge open';
-      badge.textContent = 'Smart-Flow aktiv: Leitung über 30 °C – Ventil bleibt offen.';
-    } else if (blocked) {
+    if (blocked) {
       badge.className = 'sf-badge blocked';
-      badge.textContent = 'Smart-Flow sperrt Warmwasser – Sie sparen live Wasser & Energie!';
-    } else {
+      badge.textContent = 'Smart-Flow sperrt Warmwasser – kein Energieverlust!';
+    } else if (warmPct > 0 && !sensorAbove30 && !isFullWarm) {
       badge.className = 'sf-badge open';
       badge.textContent = 'Ohne Smart-Flow: Heizung springt an – Warmwasser läuft ungenutzt ins Rohr!';
+    } else {
+      badge.className = 'sf-badge';
+      badge.textContent = 'Wasser läuft...';
     }
 
+    totalVol += (effFlow / 60) * 0.05;
     var hFlow = (FLOW / 60) * effWarmPct;
     hotVol += hFlow * 0.05;
 
@@ -611,6 +600,45 @@
     }
   }
 
+  btnWithout.addEventListener('click', function() {
+    if (running) finishWash(true);
+    smart = false;
+    btnWithout.className = 'sf-mode-btn active-without';
+    btnWith.className = 'sf-mode-btn';
+    refresh();
+  });
+
+  btnWith.addEventListener('click', function() {
+    if (running) finishWash(true);
+    smart = true;
+    btnWith.className = 'sf-mode-btn active-with';
+    btnWithout.className = 'sf-mode-btn';
+    refresh();
+  });
+
+  btnSensCold.addEventListener('click', function() {
+    if (running) finishWash(true);
+    sensorAbove30 = false;
+    btnSensCold.className = 'sf-sbtn active-cold';
+    btnSensWarm.className = 'sf-sbtn';
+    refresh();
+  });
+
+  btnSensWarm.addEventListener('click', function() {
+    if (running) finishWash(true);
+    sensorAbove30 = true;
+    btnSensWarm.className = 'sf-sbtn active-warm';
+    btnSensCold.className = 'sf-sbtn';
+    refresh();
+  });
+
+  [pLen, pCold, pHot, pMix].forEach(function(el) {
+    el.addEventListener('input', function() {
+      if (running) finishWash(true);
+      refresh();
+    });
+  });
+
   btnStart.addEventListener('click', function() {
     if (!running) {
       sec = 0;
@@ -618,7 +646,7 @@
       totalVol = 0;
       summary.style.display = 'none';
       running = true;
-      btnStart.textContent = 'Hahn schließen (Simulation stoppen)';
+      btnStart.textContent = '⏹ Hahn schließen (Simulation stoppen)';
       btnStart.classList.add('running');
       timer = setInterval(tick, 50);
     } else {
@@ -631,4 +659,3 @@
 
 </body>
 </html>
-
